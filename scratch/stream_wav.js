@@ -22,37 +22,22 @@
 const beamcoder = require('../index.js');
 
 async function run() {
-  const urls = [ 'file:../../Media/big_buck_bunny_1080p_h264.mov' ];
-  const spec = { start: 0, end: 24 };
-
+  const urls = [ 'file:../Media/sound/Countdown.wav' ];
+  const spec = { start: 50, end: 58 };
   const params = {
-    video: [
+    video: [],
+    audio: [
       {
         sources: [
           { url: urls[0], ms: spec, streamIndex: 0 }
         ],
-        filterSpec: '[in0:v] scale=1280:720, colorspace=all=bt709 [out0:v]',
-        streams: [
-          { name: 'h264', time_base: [1, 90000],
-            codecpar: {
-              width: 1280, height: 720, format: 'yuv422p', color_space: 'bt709',
-              sample_aspect_ratio: [1, 1]
-            }
-          }
-        ]
-      }
-    ],
-    audio: [
-      {
-        sources: [
-          { url: urls[0], ms: spec, streamIndex: 2 }
-        ],
-        filterSpec: '[in0:a] aformat=sample_fmts=fltp:channel_layouts=mono [out0:a]',
+        filterSpec: '[in0:a] \
+                     volume=precision=float:volume=0.8 \
+                     [out0:a]',
         streams: [
           { name: 'aac', time_base: [1, 90000],
             codecpar: {
-              sample_rate: 48000, format: 'fltp', frame_size: 1024,
-              channels: 1, channel_layout: 'mono'
+              sample_rate: 48000, format: 'fltp', channel_layout: 'stereo'
             }
           }
         ]
@@ -66,11 +51,10 @@ async function run() {
 
   await beamcoder.makeSources(params);
   const beamStreams = await beamcoder.makeStreams(params);
-
   await beamStreams.run();
 }
 
-console.log('Running mp4 maker');
+console.log('Running wav maker');
 let start = Date.now();
 run()
   .then(() => console.log(`Finished ${Date.now() - start}ms`))
