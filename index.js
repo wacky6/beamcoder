@@ -22,10 +22,6 @@
 const beamcoder = require('bindings')('beamcoder');
 const beamstreams = require('./beamstreams.js');
 
-// Provide useful debug on segfault-related crash
-const SegfaultHandler = require('segfault-handler');
-SegfaultHandler.registerHandler('crash.log');
-
 beamcoder.demuxerStream = beamstreams.demuxerStream;
 beamcoder.muxerStream = beamstreams.muxerStream;
 
